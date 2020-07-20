@@ -10,19 +10,34 @@ productController.getProducts = async (req, res) => {
 productController.createProduct = async (req, res) => {
     const { name, brand, price, stock } = req.body;
     const newProduct = new Product({
-        name: name,
-        brand: brand,
-        price: price,
-        stock: stock
+        name,
+        brand,
+        price,
+        stock
     });
     await newProduct.save();
     res.json({message: 'Producto Guardado'})
 }
 
-productController.getProductById = (req, res) => res.json({message: 'Get By Id Resquest'})
+productController.getProductById = async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    res.json(product)
+}
 
-productController.updateProduct = (req, res) => res.json({message: 'Producto Actualizado'})
+productController.updateProduct = async (req, res) => {
+    const { name, brand, price, stock } = req.body;
+    await Product.findByIdAndUpdate(req.params.id, {
+        name,
+        brand,
+        price,
+        stock
+    });
+    res.json({message: 'Producto Actualizado'})
+}
 
-productController.deleteProduct = (req, res) => res.json({message: 'Producto Eliminado'})
+productController.deleteProduct = async (req, res) => {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({message: 'Producto Eliminado'})
+}
 
 module.exports = productController;
